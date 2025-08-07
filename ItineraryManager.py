@@ -28,9 +28,11 @@ class ItineraryManager:
         return False
     
     def search_destination(self,searchCity):
+        match=[]
         for cities in self.destinations:
             if cities.city.lower()==searchCity.lower():
-                return self.cities
+                match.append(cities)
+        return match
             
     
     def view_all_file(self):
