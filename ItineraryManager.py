@@ -22,7 +22,7 @@ class ItineraryManager:
     def update_destination(self,city,updateDetails):
         for x in self.destinations:
             if x.city.lower() == city.lower():
-                x.update_details(updateDetails)
+                x.update_details(**updateDetails)
 
                 return True
         return False

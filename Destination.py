@@ -18,6 +18,7 @@ class Destination:
     
     def __str__(self):
         return f"City:{self.city}\nCountry:{self.country}\nStart Date:{self.start_date} to End Date:{self.end_date}\nBudget:{self.budget}\nActivities: {', '.join(self.activities)}"
+    
 
 
 

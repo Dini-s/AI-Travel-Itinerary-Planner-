@@ -22,11 +22,19 @@ def valid_Date(InputDate):
         return True
     except ValueError:
         return False
+    
+def valid_Budget(budget):
+    try:
+        if budget>0:
+            return True
+    except ValueError:
+        return False
         
 
 def main():
 
     manager=ItineraryManager()
+    
 
   
     while True:
@@ -63,10 +71,10 @@ def main():
             
             while(True):
                 budget=float(input("Your Budget : "))
-                if(budget>0):
+                if(valid_Budget(budget)):
                     break
                 else:
-                    print("Budget must be positive")
+                    print("Budget must be positive.Try Again...")
 
             activities=input("Enter Your planed activities seperated by using ','").split(",")
 
@@ -115,9 +123,109 @@ def main():
                         
                 
 
+        elif choice==3:
+            
+                while(True):
+                    city=input("Input City That you want to Update:").lower()
+                    option1=input("Do you need find existing details? ").lower()
 
+                    if option1=='y':
+                        existDetails=manager.search_destination(city)
+
+                        if existDetails:
+
+                            for i in existDetails:
+                                print("\t| City : "+i.city)
+                                print("\t| Country : "+i.country)
+                                print("\t| Start Date : "+i.start_date)
+                                print("\t| End Date : "+i.end_date)
+                                print("\t| Budget : "+str(i.budget))
+                                print("\t| Activities :")
+                                for j in i.activities:
+                                    print("\t\t"+j+"\n")
+
+                        else:
+                            print("Something Went to wrong.Try Again...")
+                            continue
+
+                    updates={}
+                    while(True):
+
+                        print("=== [1]Country [2]Start Date [3]End Date [4]Budget [5]Activities ===")
+                        attribute=input("Enter Field Number That You want to upadte or Type 'Done' for finished:")
+
+                        if attribute=="Done":
+                            break
+                        value=input("Enter Updated Value : ")
+                        field=""
+
+                        if attribute=="1":
+                            field="country"
+                        elif attribute=="2":
+                            field="start_date"
+
+                            if(valid_Date(value)):
+                                value=value
+                            else:
+                                print("Date Must be format in 'YYYY-MM-DD'")
+                                continue
+                        elif attribute=="3":
+                            field="end_date"
+
+                            if(valid_Date(value)):
+                                value=value
+                            else:
+                                print("Date Must be format in 'YYYY-MM-DD'")
+                                continue
+                        elif attribute=="4":
+                            field="budget"
+                            value=float(value)
+                            if(valid_Budget(value)):
+                                value=value
+                            else:
+                                print("Budget Must be Positive.")
+                                continue
+                        elif attribute=="5":
+                            field="activities"
+                            value=[value.strip() for i in value.split(",")]
+
+                       
+                        
+                        else:
+                            print("Invalid Number Try Again...")
+                            continue
+
+                        updates[field]=value
+
+
+                    if(manager.update_destination(city,updates)):
+                            print("Your Data Updated Successfully.")
+                            option3=input("Do you need to update other destination:").lower()
+                            if option3=="no":
+                                break
+                    else:
+                        print("something went to wrong.Try Again....")
+                        continue
+
+        elif choice==4:
+            for i in manager.view_all_file():
+                print(i)
+        
+        elif choice==5:
+            city=input("Enter City Of Search Destination : ").lower()
+            searchDeastination=manager.search_destination(city)
+
+            if(searchDeastination):
+                for i in searchDeastination:
+                    print(i)
+            else:
+                print("City Not Found")
+
+            
+        
 
         elif choice==9:
+            manager.save_Itinerary()
             print("Thank You for join Us....Good Bye")
             break  
 
