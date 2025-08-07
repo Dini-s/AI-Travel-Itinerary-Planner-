@@ -34,6 +34,8 @@ def valid_Budget(budget):
 def main():
 
     manager=ItineraryManager()
+
+    manager.load_from_file()
     
 
   
@@ -209,19 +211,36 @@ def main():
 
         elif choice==4:
             for i in manager.view_all_file():
-                print(i)
+                print("\n")
+                print(i+"\n")
+                
         
         elif choice==5:
-            city=input("Enter City Of Search Destination : ").lower()
-            searchDeastination=manager.search_destination(city)
+            while(True):
 
-            if(searchDeastination):
-                for i in searchDeastination:
-                    print(i)
-            else:
-                print("City Not Found")
+                city=input("Enter City Of Search Destination : ").lower()
+                searchDeastination=manager.search_destination(city)
 
-            
+                if(searchDeastination):
+                    for i in searchDeastination:
+                        print("\n")
+                        print(i)
+                        print("\n")
+                else:
+                    print("City Not Found")
+                    
+                option=input("Do You Need to Continue?").lower()
+                if option != "yes":
+                    break
+
+        
+        elif choice==7:
+            manager.save_Itinerary()
+            print("Save Itinerary")
+
+        elif choice==8:
+            manager.load_from_file()
+            print("Itinerary Loaded...")
         
 
         elif choice==9:
