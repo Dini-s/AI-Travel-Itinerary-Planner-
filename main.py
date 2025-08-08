@@ -3,7 +3,7 @@ from destination import Destination
 from itineraryManager import ItineraryManager
 from aiTravelAssistant import AITravelAssistant
 from tabulate import tabulate
-
+from theme import addNew,removeDestination,update,search,view,assistance,save,loadDes,exit
 
 theme="""
 
@@ -78,38 +78,51 @@ def main():
             print("value must be a number")
 
         if choice==1:
-            city=input("Destinated City : ")
-            country=input("Destiated Country : ")
-            while(True):
-                startDate=input("Start Date(YYYY-MM-DD) :")
-
-                if(valid_Date(startDate)):
-                    break
-                else:
-                    print("Date must be in 'YYYY-MM-DD',Try Again")
             
+            addNew()
+
             while(True):
-                endDate=input("End Date(YYYY-MM-DD) :")
+                city=input("Destinated City : ")
+                country=input("Destiated Country : ")
+                while(True):
+                    startDate=input("Start Date(YYYY-MM-DD) :")
 
-                if(valid_Date(endDate)):
-                    break
-                else:
-                    print("Date must be in 'YYYY-MM-DD',Try Again")
-            
-            while(True):
-                budget=float(input("Your Budget : "))
-                if(valid_Budget(budget)):
-                    break
-                else:
-                    print("Budget must be positive.Try Again...")
+                    if(valid_Date(startDate)):
+                        break
+                    else:
+                        print("Date must be in 'YYYY-MM-DD',Try Again")
+                
+                while(True):
+                    endDate=input("End Date(YYYY-MM-DD) :")
 
-            activities=input("Enter Your planed activities seperated by using ','").split(",")
+                    if(valid_Date(endDate)):
+                        break
+                    else:
+                        print("Date must be in 'YYYY-MM-DD',Try Again")
+                
+                while(True):
+                    budget=float(input("Your Budget : "))
+                    if(valid_Budget(budget)):
+                        break
+                    else:
+                        print("Budget must be positive.Try Again...")
 
-            #add new data to object  
-            newdestination=Destination(city,country,startDate,endDate,budget,activities)
-            manager.add_destination(newdestination)
+                activities=input("Enter Your planed activities seperated by using ',': ").split(",")
+
+                option=input("Are you want to Submit? Y-Yes N-No").lower()
+                if option=="yes":
+                    #add new data to object  
+                    newdestination=Destination(city,country,startDate,endDate,budget,activities)
+                    manager.add_destination(newdestination)
+                    print("Your Destination Added Successfully....")
+
+                    option2=input("Do you want to Continue? Y-Yes N-No").lower()
+                    if option2!="yes":
+                        break   
 
         elif choice==2:
+
+            removeDestination()
             
             while(True):
                 city=input("Enter city : ")
@@ -152,6 +165,8 @@ def main():
                 
 
         elif choice==3:
+                
+                update()
             
                 while(True):
                     city=input("Input City That you want to Update:").lower()
@@ -236,6 +251,9 @@ def main():
                         continue
 
         elif choice==4:
+
+            view()
+
             data=[]
             for i in manager.view_all_file():
                 #print("\n")
@@ -283,6 +301,9 @@ def main():
 
         
         elif choice==5:
+
+            search()
+
             while(True):
 
                 city=input("Enter City Of Search Destination : ").lower()
@@ -317,17 +338,20 @@ def main():
 
         
         elif choice==7:
+            save()
             manager.save_Itinerary()
             print("Save Itinerary")
             
 
         elif choice==8:
+            loadDes()
             manager.load_from_file()
             print("Itinerary Loaded...")
             
         
 
         elif choice==9:
+            exit()
             manager.save_Itinerary()
             print("Thank You for join Us....Good Bye")
             break  
