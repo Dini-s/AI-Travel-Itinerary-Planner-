@@ -1,6 +1,8 @@
 from datetime import datetime
 from destination import Destination
 from itineraryManager import ItineraryManager
+from aiTravelAssistant import AITravelAssistant
+from tabulate import tabulate
 
 
 theme="""
@@ -16,25 +18,48 @@ theme="""
 
 print(theme)
 
+#validate usere entered date "YYYY-MM-DD" format
 def valid_Date(InputDate):
     try:
         datetime.strptime(InputDate,"%Y-%m-%d")
         return True
     except ValueError:
-        return False
+        return 
     
+#validate budget    
 def valid_Budget(budget):
     try:
         if budget>0:
             return True
     except ValueError:
         return False
-        
+    
+#sort date in ascending order    
+def sortByDate(data):
+    
+    n=len(data)
+    for i in range(len(data)):
+        for j in range(0,n-i-1):
+            if data[j].start_date>data[j+1].start_date:
+                data[j],data[j+1]=data[j+1],data[j]
+    return data
+
+#sort budget in ascending order   
+def sortByBudget(data):
+    n=len(data)
+    for i in range(len(data)):
+        for j in range(0,n-i-1):
+            if data[j].budget>data[j+1].budget:
+                data[j],data[j+1]=data[j+1],data[j]
+    return data
 
 def main():
 
+    #create object for Itinerary Manager and ai Assistance
     manager=ItineraryManager()
+    assistance=AITravelAssistant()
 
+    #load saved file details.when the program load
     manager.load_from_file()
     
 
@@ -80,6 +105,7 @@ def main():
 
             activities=input("Enter Your planed activities seperated by using ','").split(",")
 
+            #add new data to object  
             newdestination=Destination(city,country,startDate,endDate,budget,activities)
             manager.add_destination(newdestination)
 
@@ -129,7 +155,7 @@ def main():
             
                 while(True):
                     city=input("Input City That you want to Update:").lower()
-                    option1=input("Do you need find existing details? ").lower()
+                    option1=input("Do you need find existing details? Y-yes N-no").lower()
 
                     if option1=='y':
                         existDetails=manager.search_destination(city)
@@ -210,10 +236,51 @@ def main():
                         continue
 
         elif choice==4:
+            data=[]
             for i in manager.view_all_file():
-                print("\n")
-                print(i+"\n")
-                
+                #print("\n")
+               
+                data.append({
+                    "City":i.city,
+                    "Country":i.country,
+                    "Start":i.start_date,
+                    "End Date":i.end_date,
+                    "Budget":i.budget
+                })
+               #print out put as a table      
+            print(tabulate(data,headers="keys",tablefmt="grid"))
+
+            option=input("Do You need to Sort Data? ").lower()
+            if(option=="yes"):
+                selection=input("[1]Sort By Date [2]Sort By Budget: ")
+                if selection=="1":
+                    sortedDestination=sortByDate(manager.view_all_file())
+                    table=[]
+                    for i in sortedDestination:
+                        table.append({
+                            "City":i.city,
+                            "Country":i.country,
+                            "Start":i.start_date,
+                            "End Date":i.end_date,
+                            "Budget":i.budget
+                        })
+                    print(tabulate(table,headers="keys",tablefmt="grid"))
+                elif selection=="2":
+                    sortedDestination=sortByBudget(manager.view_all_file())
+                    table=[]
+                    for i in sortedDestination:
+                        table.append({
+                            "City":i.city,
+                            "Country":i.country,
+                            "Start":i.start_date,
+                            "End Date":i.end_date,
+                            "Budget":i.budget
+                        })
+                    print(tabulate(table,headers="keys",tablefmt="grid"))
+                else:
+                    print("Invalid Number")
+                    
+
         
         elif choice==5:
             while(True):
@@ -233,14 +300,31 @@ def main():
                 if option != "yes":
                     break
 
+        elif choice==6:
+            while(True):
+
+                city=input("Enter city for AI plan: ")
+
+                for i in manager.destinations:
+                    if i.city.lower()== city.lower():
+                        print("\n====AI Travel Itinerary====")
+                        print(assistance.generate_itinerary(i))
+                        print("\n ====Travel Budget Plan===")
+                        print(assistance.generate_budget_tip(i))
+                option=input("Do You Want To continue?(Y-Yes N-No)")  
+                if option != 'y':
+                    break 
+
         
         elif choice==7:
             manager.save_Itinerary()
             print("Save Itinerary")
+            
 
         elif choice==8:
             manager.load_from_file()
             print("Itinerary Loaded...")
+            
         
 
         elif choice==9:
